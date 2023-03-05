@@ -1,6 +1,6 @@
 ﻿add_subdirectory(MySort)
 
-add_library(${CMAKE_PROJECT_NAME} MyAlgorithmsDummy.cpp)
+add_library(${CMAKE_PROJECT_NAME} MyAlgorithmsDummy.cpp "MySum/sum.h")
 #set_property(TARGET ${CMAKE_PROJECT_NAME} PROPERTY CXX_STANDARD 20)
 target_link_libraries(${CMAKE_PROJECT_NAME} MySort)
 

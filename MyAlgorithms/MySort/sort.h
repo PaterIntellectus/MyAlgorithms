@@ -3,13 +3,16 @@
 
 #include <iostream>
 #include <iterator>
+//#include <algorithm>
 
-template<typename T>
-void insertionSortContainer(T& container)
+// sorting function that template takes only standard array types
+template<typename TArray, size_t TSize>
+void insertionSortArray(TArray (&container)[TSize])
 {
-  if (container.size() < 2) { return; }
+  const auto containerSize{ std::size(container) };
+  if (containerSize < 2) { return; }
 
-  for (int i{ 1 }; i < container.size(); ++i) {
+  for (int i{ 1 }; i < containerSize; ++i) {
     const auto key{ container[i] };
     int j{ i - 1 };
     while (-1 < j && key < container[j]) {
@@ -20,20 +23,28 @@ void insertionSortContainer(T& container)
   }
 }
 
-template<typename T>
-void insertionSortContainerStl(T& container)
+// insertion sort that works with stl containers
+template<
+typename TContainer,
+typename T = std::decay_t<decltype(*begin(std::declval<TContainer>()))>>
+void insertionSortStl(TContainer &container)
 {
   if (container.size() < 2) { return; }
 
+  // version with iterators and their operators only
   for (auto i{ std::next(container.begin()) }; i != container.end(); ++i) {
-    const auto key{ *i };
-    auto j{ std::prev(i) };
-    while (j != std::prev(container.begin()) && *j > key) {
-      *std::next(j) = *j;
-      --j;
+    for (auto j{ container.begin() }; j != i; std::advance(j, 1)) {
+      if (*j < *i) { continue; }
+      auto temp{ *j };
+      *j = *i;
+      *i = temp;
     }
-    *std::next(j) = key;
   }
+
+  // full stl version which works almost the same way
+  //for (auto i{ std::next(container.begin()) }; i != container.end(); ++i) {
+  //  std::rotate(std::upper_bound(container.begin(), i, *i), i, std::next(i));
+  //}
 }
 
 #endif // SORTING_H
